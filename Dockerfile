@@ -32,7 +32,7 @@ RUN apt-get update -y && \
     libxml2 \
     libxml2-dev \
     libpcre3-dev \
-    && pecl install -n solr
+    && pecl install -n solr-1.1.1
 
 # Configure PHP-FPM
 RUN sed -i "s/;date.timezone =.*/date.timezone = UTC/" /etc/php5/fpm/php.ini && \
