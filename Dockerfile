@@ -33,7 +33,8 @@ RUN apt-get update -y && \
     libxml2-dev \
     libpcre3-dev \
     && pecl install -n solr-1.1.1 \
-    && pear install mail
+    && pear install mail \
+    && pear install Net_SMTP
 
 # Configure PHP-FPM
 RUN sed -i "s/;date.timezone =.*/date.timezone = UTC/" /etc/php5/fpm/php.ini && \
