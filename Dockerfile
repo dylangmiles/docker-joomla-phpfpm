@@ -51,6 +51,8 @@ RUN sed -i "s/;date.timezone =.*/date.timezone = UTC/" /etc/php5/fpm/php.ini && 
     && echo "extension=solr.so" > /etc/php5/fpm/conf.d/solr.ini \
     && echo "extension=solr.so" > /etc/php5/cli/conf.d/solr.ini
 
+#Patch pear mail to allow for certificate exceptions
+RUN sed -i "s/\$this->_socket_options = \$socket_options;/\$this->_socket_options = array('ssl' => array('verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true));/" /usr/share/php/Net/SMTP.php
 
 RUN mkdir -p /data
 VOLUME ["/data"]
