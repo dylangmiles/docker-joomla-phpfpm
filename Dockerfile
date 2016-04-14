@@ -52,7 +52,7 @@ RUN sed -i "s/;date.timezone =.*/date.timezone = UTC/" /etc/php5/fpm/php.ini && 
     && echo "extension=solr.so" > /etc/php5/cli/conf.d/solr.ini
 
 #Patch pear mail to allow for certificate exceptions
-RUN sed -i "s/\$this->_socket_options = \$socket_options;/\$this->_socket_options = array('ssl' => array('verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true));/" /usr/share/php/Net/SMTP.php
+RUN sed -i "s/\$this->socket_options = \$socket_options;/\$this->socket_options = array('ssl' => array('verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true));/" /usr/share/php/Net/SMTP.php
 
 # Configure XDebug
 RUN   echo "xdebug.remote_enable = 1" >> /etc/php5/fpm/conf.d/20-xdebug.ini
