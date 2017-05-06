@@ -32,8 +32,11 @@ RUN apt-get update -y && \
     libxml2 \
     libxml2-dev \
     libpcre3-dev \
-    && pecl install -n solr-1.1.1 \
-    && pear install mail \
+    && pecl install -n solr-1.1.1
+
+
+RUN pear upgrade --force
+RUN pear install mail \
     && pear install Net_SMTP
 
 # Configure PHP-FPM
@@ -56,8 +59,19 @@ RUN sed -i "s/\$this->socket_options = \$socket_options;/\$this->socket_options 
 
 # Configure XDebug
 RUN   echo "xdebug.remote_enable = 1" >> /etc/php5/fpm/conf.d/20-xdebug.ini
-RUN   echo "xdebug.remote_connect_back = 1" >> /etc/php5/fpm/conf.d/20-xdebug.ini
 RUN   echo "xdebug.remote_port = 9000" >> /etc/php5/fpm/conf.d/20-xdebug.ini
+
+# Set the hostname so xdebug knows which ip to connect back to. This should be set in the Dockerfile as:
+## extra_hosts:
+##      - debughost:${IP_ADDRESS}
+RUN   echo "xdebug.remote_host=debughost" >> /etc/php5/fpm/conf.d/20-xdebug.ini
+RUN   echo "xdebug.remote_autostart=1" >> /etc/php5/fpm/conf.d/20-xdebug.ini
+
+#Don't include this if the remote_host is included.
+#RUN   echo "xdebug.remote_connect_back = 1" >> /etc/php5/fpm/conf.d/20-xdebug.ini
+
+#DEBUG ONLY: Allow environment variables to be picked up in $_SERVER by php-fpm for debugging purposes (eg. $PHP_IDE_CONFIG).
+RUN sed -i "s/;clear_env = .*/;clear_env = no/" /etc/php5/fpm/pool.d/www.conf
 
 RUN mkdir -p /data
 VOLUME ["/data"]
